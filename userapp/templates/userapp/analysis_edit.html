@@ -1,0 +1,58 @@
+{% extends "userapp/base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>Edit and Save Product Data</h2>
+
+    <!-- Display extracted OCR text -->
+    {% if extracted_text %}
+    <div class="alert alert-info">
+        <h4>Extracted Text:</h4>
+        <pre>{{ extracted_text }}</pre>
+    </div>
+    {% endif %}
+
+    <!-- Editable Form -->
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="product">Product:</label>
+            <input type="text" id="product" name="product" class="form-control" value="{{ product.product }}">
+        </div>
+        <div class="form-group">
+            <label for="product_group">Product Group:</label>
+            <input type="text" id="product_group" name="product_group" class="form-control" value="{{ product.product_group }}">
+        </div>
+        <div class="form-group">
+            <label for="year">Year:</label>
+            <input type="number" id="year" name="year" class="form-control" value="{{ product.year }}">
+        </div>
+        <div class="form-group">
+            <label for="origin">Origin:</label>
+            <input type="text" id="origin" name="origin" class="form-control" value="{{ product.origin }}">
+        </div>
+        <div class="form-group">
+            <label for="quantity">Quantity:</label>
+            <input type="text" id="quantity" name="quantity" class="form-control" value="{{ product.quantity }}">
+        </div>
+        <div class="form-group">
+            <label for="price">Price:</label>
+            <input type="text" id="price" name="price" class="form-control" value="{{ product.price }}">
+        </div>
+        <div class="form-group">
+            <label for="tag1">Tag 1:</label>
+            <input type="text" id="tag1" name="tag1" class="form-control" value="{{ product.tag1 }}">
+        </div>
+        <div class="form-group">
+            <label for="tag2">Tag 2:</label>
+            <input type="text" id="tag2" name="tag2" class="form-control" value="{{ product.tag2 }}">
+        </div>
+        <div class="form-group">
+            <label for="tag3">Tag 3:</label>
+            <input type="text" id="tag3" name="tag3" class="form-control" value="{{ product.tag3 }}">
+        </div>
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a href="{% url 'content_table' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

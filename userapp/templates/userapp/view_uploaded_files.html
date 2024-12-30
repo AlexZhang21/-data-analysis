@@ -1,0 +1,25 @@
+{% extends "userapp/base.html" %}
+
+{% block content %}
+<div class="container">
+  <h2>Uploaded Files</h2>
+
+  {% if file_urls %}
+    <ul>
+      {% for file_url in file_urls %}
+        <li>
+          <a href="{{ file_url }}" target="_blank">{{ file_url }}</a>
+          <!-- Add delete functionality -->
+          <form method="post" action="{% url 'delete_uploaded_file' forloop.counter0 %}" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+          </form>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No files have been uploaded yet.</p>
+  {% endif %}
+</div>
+{% endblock %}
+

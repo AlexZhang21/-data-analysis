@@ -1,235 +1,158 @@
-{% extends base %}
+{% extends "userapp/base.html" %}
 
 {% block content %}
-
-{% for message in messages %}
-    <div class="container-fluid p-0">
-        <div class="alert {{ message.tags }} alert-dismissible" role="alert" >
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="True">&times;</span>
-            </button>
-            {{ message }}
-        </div>
+<div class="container-fluid">
+  <!-- Display Messages -->
+  {% for message in messages %}
+    <div class="alert {{ message.tags }} alert-dismissible" role="alert">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      {{ message }}
     </div>
-{% endfor %}
+  {% endfor %}
 
-      <div style="display:flex;">
-          <div style="margin-right: auto;"><h2>content table</h2></div>
-          <div style="margin-left: auto;"><a class="btn btn-success" style="text" href="{% url 'Company_Create' %}"><i class="fa fa-plus" ></i>Add new Company</a></div>
-      </div>
-      <div style="display:flex; padding:5px;">
-          <div style="margin-left: auto;"><button onclick="showinvi()" class="btn btn-primary">Filter</button></div>
-      </div>
+  <!-- Header Section -->
+  <div class="row">
+    <div class="col">
+      <h2>Content Table</h2>
+    </div>
+    <div class="col text-right">
+      <a class="btn btn-success" href="{% url 'create_company_form' %}">
+        <i class="fa fa-plus"></i> Add New Record
+      </a>
+    </div>
+  </div>
 
-
-      <div id="invisiblediv" style="display:none">
-          <table class="table table-bordered">
-          <tbody>
-            <tr>
-                <td><label for="{{ form.company_type.id_for_label }}" >{{ form.company_type.label }}: </label></td>
-                <td><label for="{{ form.trader.id_for_label }}" >{{ form.trader.label }}: </label></td>
-                <td><label for="{{ form.product.id_for_label }}" >{{ form.product.label }}: </label></td>
-                <td><label for="{{ form.payment.id_for_label }}" >{{ form.payment.label }}: </label></td>
-            </tr>
-            <tr>
-                <td>
-                    <select name="{{ form.company_type.html_name }}" value="{{ form.company_type.value }}" id="{{ form.company_type.id_for_label }}" class="form-control" multiple>
-                        {% for widget in form.company_type.subwidgets %}
-                            {{ widget }}
-                        {% endfor %}
-                    </select>
-                </td>
-                <td>
-                    <select name="{{ form.trader.html_name }}" value="{{ form.trader.value }}" class="form-control" id="{{ form.trader.id_for_label }}">
-                                {% for widget in form.trader.subwidgets %}
-                                    {{ widget }}
-                                {% endfor %}
-                    </select>
-                </td>
-                <td>
-                    <select name="{{ form.product.html_name }}" value="{{ form.product.value }}" id="{{ form.product.id_for_label }}" class="form-control" multiple>
-                        {% for widget in form.product.subwidgets %}
-                            {{ widget }}
-                        {% endfor %}
-                    </select>
-                </td>
-                <td>
-                    <select name="{{ form.payment.html_name }}" class="form-control" value="{{ form.payment.value }}" id="{{ form.payment.id_for_label }}" multiple>
-                        {% for widget in form.payment.subwidgets %}
-                            {{ widget }}
-                        {% endfor %}
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <td><label for="{{ form.issuing_bank.id_for_label }}" >{{ form.issuing_bank.label }}: </label></td>
-                <td><label for="{{ form.receiving_bank.id_for_label }}" >{{ form.receiving_bank.label }}: </label></td>
-                <td><label for="{{ form.tt_bank.id_for_label }}" >{{ form.tt_bank.label }}: </label></td>
-                <td><label for="{{ form.country.id_for_label }}" >{{ form.country.label }}: </label></td>
-            </tr>
-            <tr>
-                <td>
-                    <select name="{{ form.issuing_bank.html_name }}" value="{{ form.issuing_bank.value }}" id="{{ form.issuing_bank.id_for_label }}" class="form-control" multiple>
-                        {% for widget in form.issuing_bank.subwidgets %}
-                            {{ widget }}
-                        {% endfor %}
-                    </select>
-                </td>
-                <td>
-                    <select name="{{ form.receiving_bank.html_name }}" value="{{ form.receiving_bank.value }}" class="form-control" id="{{ form.receiving_bank.id_for_label }}" multiple>
-                                {% for widget in form.receiving_bank.subwidgets %}
-                                    {{ widget }}
-                                {% endfor %}
-                    </select>
-                </td>
-                <td>
-                    <select name="{{ form.tt_bank.html_name }}" value="{{ form.tt_bank.value }}" id="{{ form.tt_bank.id_for_label }}" class="form-control" multiple>
-                        {% for widget in form.tt_bank.subwidgets %}
-                            {{ widget }}
-                        {% endfor %}
-                    </select>
-                </td>
-                <td>
-                    <select name="{{ form.country.html_name }}" class="form-control" value="{{ form.country.value }}" id="{{ form.country.id_for_label }}">
-                        {% for widget in form.country.subwidgets %}
-                            {{ widget }}
-                        {% endfor %}
-                    </select>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-      </div>
-      <table id="example2" class="table table-bordered table-responsive">
-            <thead class="thead-light">
-                  <tr>
-                      <th scope="col">No</th>
-                      <th scope="col">Company Name</th>
-                      <th scope="col">Company Type</th>
-                      <th scope="col">Trader</th>
-                      <th scope="col">Counterparty Onboarding Status</th>
-                      <th scope="col">Onboarding Date</th>
-                      <th scope="col">Buyer/Supplier</th>
-                      <th scope="col">Product</th>
-                      <th scope="col">Payment</th>
-                      <th scope="col">LC Issuing Bank</th>
-                      <th scope="col">LC Receiving Bank</th>
-                      <th scope="col">TT Bank</th>
-                      <th scope="col">Credit Amount(USD)</th>
-                      <th scope="col">Credit Period(days)</th>
-                      <th scope="col">Country</th>
-                      <th scope="col">Serenity Onboarding Status</th>
-                      <th scope="col">Onboarding Date</th>
-                      <th scope="col">Remarks</th>
-                      <th scope="col">Document Received</th>
-                      {%if request.user.is_superuser %}
-                      <th scope="col">Edit</th>
-                      <th scope="col">Delete</th>
-                      {% endif %}
-                  </tr>
-            </thead>
-            <tbody>
-            {% if company_list|length > 0 %}
-              {% for i in company_list %}
-              <tr>
-                  <th scope="row">{{ forloop.counter }}</th>
-                  <td>
-                      <a href = "{% url 'Comp_details' i.id %}">{{ i.company_name }}</a>
-                  </td>
-                  <td>
-                      {% for com_type in i.company_type.all %}
-                        {% if forloop.last %}
-                            {{ com_type.company_type }}
-                        {% else %}
-                            {{ com_type.company_type }},
-                        {% endif %}
-                      {% endfor %}
-                  </td>
-                  <td>{{ i.trader }}</td>
-                  <td>{{ i.counterparty_onboard_status }}</td>
-                  <td>
-                      {% if i.counterparty_onboard_date %}
-                        {{ i.counterparty_onboard_date|date:'Y-m-d' }}
-                      {% endif %}
-                  </td>
-                  <td>{{ i.buyer_supplier }}</td>
-                  <td>
-                      {% for pro_type in i.product.all %}
-                        {% if forloop.last %}
-                            {{ pro_type.product_type  }}
-                        {% else %}
-                            {{ pro_type.product_type }},
-                        {% endif %}
-                      {% endfor %}
-                  </td>
-                  <td>
-                      {% for pay_type in i.payment.all %}
-                        {% if forloop.last %}
-                            {{ pay_type.payment_type  }}
-                        {% else %}
-                            {{ pay_type.payment_type }},
-                        {% endif %}
-                      {% endfor %}
-                  </td>
-                  <td>
-                      {% for insu_bank in i.issuing_bank.all %}
-                        {% if forloop.last %}
-                            {{ insu_bank.bank_name }}
-                        {% else %}
-                            {{ insu_bank.bank_name }},
-                        {% endif %}
-                      {% endfor %}
-                  </td>
-                  <td>
-                      {% for re_bank in i.receiving_bank.all %}
-                        {% if forloop.last %}
-                            {{ re_bank.bank_name }}
-                        {% else %}
-                            {{ re_bank.bank_name }},
-                        {% endif %}
-                      {% endfor %}
-                  </td>
-                  <td>
-                      {% for t_bank in i.tt_bank.all %}
-                        {% if forloop.last %}
-                            {{ t_bank.bank_name }}
-                        {% else %}
-                            {{ t_bank.bank_name }},
-                        {% endif %}
-                      {% endfor %}
-                  </td>
-                  <td>
-                      {% if i.credit_amount %}
-                        {{ i.credit_amount }}
-                      {% endif %}
-                  </td>
-                  <td>
-                      {% if i.credit_period %}
-                        {{ i.credit_period }}
-                      {% endif %}
-                  </td>
-                  <td>{{ i.country }}</td>
-                  <td>{{ i.serenity_onboard_status }}</td>
-                  <td>
-                      {% if i.serenity_onboard_date %}
-                        {{ i.serenity_onboard_date|date:'Y-m-d' }}
-                      {% endif %}
-                  </td>
-                  <td>{{ i.remarks }}</td>
-                  <td>
-                      <a href="{% url 'Company_file' i.id %}" role="button" class="btn btn-primary">File</a>
-                  </td>
-                  {%if request.user.is_superuser %}
-                  <td>
-                      <a href="{% url 'Edit_Company' i.id %}" role="button" class="btn btn-warning">Edit</a>
-                  </td>
-                  <td>
-                      <a data-href="{% url 'Delete_Company_Record' i.id %}" onclick="confirm_delete_company();" role="button" class="btn btn-danger">Delete</a>
-                  </td>
+  <!-- Content Table -->
+  <table id="contentTable" class="table table-bordered table-responsive">
+      <thead class="thead-light">
+          <tr>
+              <th>No</th>
+              <th>Product</th>
+              <th>Product Group</th>
+              <th>Year</th>
+              <th>Origin</th>
+              <th>Quantity</th>
+              <th>Price</th>
+              <th>Tags</th>
+              <th>Uploaded By</th>
+              <th>Upload Time</th>
+              <th>File</th>
+              <th>Actions</th>
+          </tr>
+      </thead>
+      <tbody>
+          {% for entry in page_obj %}
+          <tr id="row-{{ entry.id }}">
+              <td>{{ forloop.counter }}</td>
+              <!-- Product column links to the analysis page -->
+              <td>
+                  <a href="{% url 'analyze_image' entry.id %}">
+                      {{ entry.product }}
+                  </a>
+              </td>
+              <td>{{ entry.product_group }}</td>
+              <td>{{ entry.year }}</td>
+              <td>{{ entry.origin }}</td>
+              <td>{{ entry.quantity }}</td>
+              <td>{{ entry.price }}</td>
+              <td>{{ entry.tag1 }}, {{ entry.tag2 }}, {{ entry.tag3 }}</td>
+              <td>{{ entry.upload_user_id.username }}</td>
+              <td>{{ entry.upload_time }}</td>
+              <td>
+                  {% if entry.uploaded_file %}
+                  <a href="{{ entry.uploaded_file.url }}" target="_blank">View File</a>
+                  {% else %}
+                  No file uploaded
                   {% endif %}
-              </tr>
-              {% endfor %}
-            {% endif %}
-            </tbody>
-    </table>
+              </td>
+              <td>
+                  <a href="{% url 'edit_product_entry' entry.id %}" class="btn btn-warning">Edit</a>
+                  <button class="btn btn-danger" onclick="confirmDelete({{ entry.id }})">Delete</button>
+              </td>
+          </tr>
+          {% endfor %}
+      </tbody>
+  </table>
+
+  <!-- Pagination -->
+  <div class="pagination">
+      <span class="step-links">
+          {% if page_obj.has_previous %}
+              <a href="?page=1">&laquo; First</a>
+              <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+          {% endif %}
+
+          <span class="current">
+              Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+          </span>
+
+          {% if page_obj.has_next %}
+              <a href="?page={{ page_obj.next_page_number }}">Next</a>
+              <a href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a>
+          {% endif %}
+      </span>
+  </div>
+</div>
+
+<!-- JavaScript for DataTables -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#contentTable').DataTable({
+            "paging": true,
+            "searching": true,
+            "ordering": true,
+            "pageLength": 20,
+            "lengthMenu": [10, 20, 50, 100],
+            "info": true,
+            "language": {
+                "paginate": {
+                    "previous": "&laquo;",
+                    "next": "&raquo;"
+                },
+                "search": "Search:",
+                "lengthMenu": "Show _MENU_ entries per page",
+                "info": "Showing _START_ to _END_ of _TOTAL_ entries"
+            }
+        });
+    });
+
+    function confirmDelete(entryId) {
+        if (confirm("Are you sure you want to delete this entry?")) {
+            fetch(`/delete_product_entry/${entryId}/`, {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": "{{ csrf_token }}",
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                    document.getElementById(`row-${entryId}`).remove();
+                } else {
+                    alert("Failed to delete entry: " + data.message);
+                }
+            })
+            .catch(error => console.error("Error:", error));
+        }
+    }
+</script>
 {% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

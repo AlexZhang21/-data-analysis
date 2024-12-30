@@ -1,171 +1,178 @@
-{% extends base %}
+{% extends "userapp/base.html" %}
 
 {% block content %}
+<div class="container">
+  <h2>Create New Record</h2>
 
-{% load static %}
+  <!-- Display messages -->
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert {{ message.tags }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    {% endfor %}
+  {% endif %}
 
-<h2>Create Form</h2>
-{% if form.errors %}
+  <!-- Display form errors -->
+  {% if form.errors %}
     <div class="alert alert-danger">
-        {{ form.errors }}
+      <ul>
+        {% for field, errors in form.errors.items %}
+          <li><strong>{{ field }}:</strong> {{ errors|join:", " }}</li>
+        {% endfor %}
+      </ul>
     </div>
-{% endif %}
-{% if messages %}
-    <div class="alert alert-danger">
-        {{ messages }}
+  {% endif %}
+
+  <!-- Form -->
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <table class="table">
+      <!-- Product -->
+      <tr>
+        <td><label for="product">Product</label></td>
+        <td>
+          <input type="text" name="product" id="product" class="form-control" value="{{ form.product.value|default:'' }}" required>
+          {% if form.product.errors %}
+            <span class="text-danger">{{ form.product.errors|join:", " }}</span>
+          {% endif %}
+        </td>
+      </tr>
+
+      <!-- Product Group -->
+      <tr>
+        <td><label for="product_group">Product Group</label></td>
+        <td>
+          <select name="product_group" id="product_group" class="form-control" required>
+            {% for value, display in form.product_group.field.choices %}
+              <option value="{{ value }}" {% if form.product_group.value == value %}selected{% endif %}>
+                {{ display }}
+              </option>
+            {% endfor %}
+          </select>
+          {% if form.product_group.errors %}
+            <span class="text-danger">{{ form.product_group.errors|join:", " }}</span>
+          {% endif %}
+        </td>
+      </tr>
+
+      <!-- Year -->
+      <tr>
+        <td><label for="year">Year</label></td>
+        <td>
+          <select name="year" id="year" class="form-control" required>
+            {% for value, display in form.year.field.choices %}
+              <option value="{{ value }}" {% if form.year.value == value %}selected{% endif %}>
+                {{ display }}
+              </option>
+            {% endfor %}
+          </select>
+          {% if form.year.errors %}
+            <span class="text-danger">{{ form.year.errors|join:", " }}</span>
+          {% endif %}
+        </td>
+      </tr>
+
+      <!-- Optional Fields -->
+      <tr>
+        <td><label for="origin">Origin</label></td>
+        <td>
+          <input type="text" name="origin" id="origin" class="form-control" value="{{ form.origin.value|default:'' }}">
+          {% if form.origin.errors %}
+            <span class="text-danger">{{ form.origin.errors|join:", " }}</span>
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td><label for="quantity">Quantity</label></td>
+        <td>
+          <input type="text" name="quantity" id="quantity" class="form-control" value="{{ form.quantity.value|default:'' }}">
+          {% if form.quantity.errors %}
+            <span class="text-danger">{{ form.quantity.errors|join:", " }}</span>
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td><label for="price">Price</label></td>
+        <td>
+          <input type="text" name="price" id="price" class="form-control" value="{{ form.price.value|default:'' }}">
+          {% if form.price.errors %}
+            <span class="text-danger">{{ form.price.errors|join:", " }}</span>
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td><label for="tag1">Tag 1</label></td>
+        <td>
+          <input type="text" name="tag1" id="tag1" class="form-control" value="{{ form.tag1.value|default:'' }}">
+          {% if form.tag1.errors %}
+            <span class="text-danger">{{ form.tag1.errors|join:", " }}</span>
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td><label for="tag2">Tag 2</label></td>
+        <td>
+          <input type="text" name="tag2" id="tag2" class="form-control" value="{{ form.tag2.value|default:'' }}">
+          {% if form.tag2.errors %}
+            <span class="text-danger">{{ form.tag2.errors|join:", " }}</span>
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td><label for="tag3">Tag 3</label></td>
+        <td>
+          <input type="text" name="tag3" id="tag3" class="form-control" value="{{ form.tag3.value|default:'' }}">
+          {% if form.tag3.errors %}
+            <span class="text-danger">{{ form.tag3.errors|join:", " }}</span>
+          {% endif %}
+        </td>
+      </tr>
+
+      <!-- File Upload -->
+      <tr>
+        <td><label for="upload_file">Upload File</label></td>
+        <td>
+          <input type="file" name="upload_file" id="upload_file" class="form-control" accept=".png, .jpg, .jpeg, .pdf, .xls, .xlsx">
+          {% if form.upload_file.errors %}
+            <span class="text-danger">{{ form.upload_file.errors|join:", " }}</span>
+          {% endif %}
+        </td>
+      </tr>
+    </table>
+
+    <!-- Submit Button -->
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+
+  <!-- Uploaded File Preview -->
+  {% if uploaded_data %}
+    <div class="mt-4">
+      <h4>Uploaded Excel Data:</h4>
+      <div class="table-responsive">
+        {{ uploaded_data|safe }}
+      </div>
     </div>
-{% endif %}
-<table class="table table-bordered">
-    <form enctype="multipart/form-data" method="POST" action="" id="myForm">
-        {% csrf_token %}
-    <tbody>
-        <tr>
-            <td colSpan=3><label for="{{ form.trader.id_for_label }}" >{{ form.trader.label }}: </label></td>
-        </tr>
-        <tr>
-            <td colSpan=3>
-                <select name="{{ form.trader.html_name }}" value="{{ form.trader.value }}" class="form-control" id="{{ form.trader.id_for_label }}" required>
-                        {% for widget in form.trader.subwidgets %}
-                            {{ widget }}
-                        {% endfor %}
-                </select>
-            </td>
-        </tr>
-        <tr>
-            <td><label for="{{ form.company_name.id_for_label }}" >{{ form.company_name.label }}: </label></td>
-            <td><label for="{{ form.company_type.id_for_label }}" >{{ form.company_type.label }}: </label></td>
-            <td><label for="{{ form.counterparty_onboard_status.id_for_label }}">{{ form.counterparty_onboard_status.label }}: </label></td>
-        </tr>
-        <tr>
-            <td><input name="{{ form.company_name.html_name }}" type="text" id="{{ form.company_name.id_for_label }}" class="form-control" {% if form.company_name.value|length > 0 %} value="{{ form.company_name.value }}" {% endif %} required></td>
-            <td>
-                <select name="{{ form.company_type.html_name }}" value="{{ form.company_type.value }}" id="{{ form.company_type.id_for_label }}" class="form-control" multiple required="false">
-                        {% for widget in form.company_type.subwidgets %}
-                            {{ widget }}
-                        {% endfor %}
-                </select>
-            </td>
-            <td>
-                <select name="{{ form.counterparty_onboard_status.html_name }}" value="{{ form.counterparty_onboard_status.value }}" class="form-control" id="{{ form.counterparty_onboard_status.id_for_label }}" required>
-                        {% for widget in form.counterparty_onboard_status.subwidgets %}
-                            {{ widget }}
-                        {% endfor %}
-                </select>
-            </td>
-        </tr>
-        <tr>
-            <td><label for="{{ form.buyer_supplier.id_for_label }}" >{{ form.buyer_supplier.label }}: </label></td>
-            <td><label for="{{ form.product.id_for_label }}" >{{ form.product.label }}: </label></td>
-            <td><label for="{{ form.payment.id_for_label }}" >{{ form.payment.label }}: </label></td>
-        </tr>
-        <tr>
-            <td>
-                <select name="{{ form.buyer_supplier.html_name }}" class="form-control" value="{{ form.buyer_supplier.value }}" id="{{ form.buyer_supplier.id_for_label }}" required>
-                        {% for widget in form.buyer_supplier.subwidgets %}
-                            {{ widget }}
-                        {% endfor %}
-                </select>
-            </td>
-            <td>
-                <select name="{{ form.product.html_name }}" class="form-control" value="{{ form.product.value }}" id="{{ form.product.id_for_label }}" multiple required="false">
-                        {% for widget in form.product.subwidgets %}
-                            {{ widget }}
-                        {% endfor %}
-                </select>
-            </td>
-            <td>
-                <select name="{{ form.payment.html_name }}" class="form-control" value="{{ form.payment.value }}" id="{{ form.payment.id_for_label }}" multiple required="false">
-                        {% for widget in form.payment.subwidgets %}
-                            {{ widget }}
-                        {% endfor %}
-                </select>
-            </td>
-        </tr>
-        <tr>
-            <td><label for="{{ form.issuing_bank.id_for_label }}" >{{ form.issuing_bank.label }}: </label></td>
-            <td><label for="{{ form.receiving_bank.id_for_label }}" >{{ form.receiving_bank.label }}: </label></td>
-            <td><label for="{{ form.tt_bank.id_for_label }}" >{{ form.tt_bank.label }}: </label></td>
-        </tr>
-        <tr>
-            <td>
-                <select name="{{ form.issuing_bank.html_name }}" class="form-control" value="{{ form.issuing_bank.value }}" id="{{ form.issuing_bank.id_for_label }}" multiple {% if form.payment.value|length == 0 or 1 not in form.payment.value %} disabled {% endif %} />
-                        {% for widget in form.issuing_bank.subwidgets %}
-                            {{ widget }}
-                        {% endfor %}
-                </select>
-            </td>
-            <td>
-                <select name="{{ form.receiving_bank.html_name }}" class="form-control" value="{{ form.receiving_bank.value }}" id="{{ form.receiving_bank.id_for_label }}" multiple {% if form.payment.value|length == 0 or 1 not in form.payment.value %} disabled {% endif %} />
-                        {% for widget in form.receiving_bank.subwidgets %}
-                            {{ widget }}
-                        {% endfor %}
-                </select>
-            </td>
-            <td>
-                <select name="{{ form.tt_bank.html_name }}" class="form-control" value="{{ form.tt_bank.value }}" id="{{ form.tt_bank.id_for_label }}" multiple {% if form.payment.value|length == 0 or 3 not in form.payment.value and 2 not in form.payment.value %} disabled {% endif %} />
-                        {% for widget in form.tt_bank.subwidgets %}
-                            {{ widget }}
-                        {% endfor %}
-                </select>
-            </td>
-        </tr>
-        <tr>
-            <td><label for="{{ form.credit_amount.id_for_label }}" >{{ form.credit_amount.label }}: </label></td>
-            <td><label for="{{ form.credit_period.id_for_label }}" >{{ form.credit_period.label }}: </label></td>
-            <td><label for="{{ form.country.id_for_label }}" >{{ form.country.label }}: </label></td>
-        </tr>
-        <tr>
-            <td>
-                <input type="number" name="{{ form.credit_amount.html_name }}" placeholder="credit amount" step="0.01" class="form-control" id="{{ form.credit_amount.id_for_label }}" {% if form.payment.value|length == 0 or 3 not in form.payment.value and 2 not in form.payment.value %} disabled {% endif %} />
-            </td>
-            <td>
-                <input type="number" name="{{ form.credit_period.html_name }}" placeholder="credit period" class="form-control" id="{{ form.credit_period.id_for_label }}" {% if form.payment.value|length == 0 or 3 not in form.payment.value and 2 not in form.payment.value %} disabled {% endif %} />
-            </td>
-            <td>
-                <select name="{{ form.country.html_name }}" class="form-control" value="{{ form.country.value }}" id="{{ form.country.id_for_label }}" required>
-                        {% for widget in form.country.subwidgets %}
-                            {{ widget }}
-                        {% endfor %}
-                </select>
-            </td>
-        </tr>
-        <tr>
-            <td colSpan=3>
-                <label for="{{ form.serenity_onboard_status.id_for_label }}" >{{ form.serenity_onboard_status.label }}: </label>
-            </td>
-        </tr>
-        <tr>
-            <td colSpan=3>
-                <select name="{{ form.serenity_onboard_status.html_name }}" class="form-control" value="{{ form.serenity_onboard_status.value }}" id="{{ form.serenity_onboard_status.id_for_label }}" required>
-                        {% for widget in form.serenity_onboard_status.subwidgets %}
-                            {{ widget }}
-                        {% endfor %}
-                </select></td>
-        </tr>
-        <tr>
-            <td colSpan=3>
-                <label for="{{ form.file_upload.id_for_label }}" >{{ form.file_upload.label }}: </label>
-                <input type="file" name="{{ form.file_upload.html_name }}" class="form-control-file" multiple id="{{ form.file_upload.id_for_label }}">
-            </td>
-        </tr>
-        <tr>
-            <td colSpan=3><label for="{{ form.remarks.id_for_label }}" >{{ form.remarks.label }}: </label></td>
-        </tr>
-        <tr>
-            <td colSpan=3><textarea name="{{ form.remarks.html_name }}" class="form-control" cols="40" rows="3" maxlength="1000" id="{{ form.remarks.id_for_label }}"></textarea></td>
-        </tr>
-        <tr>
-            <td colSpan=3>
-                <div style="display:flex;">
-                    <div style="margin-left: auto;">
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                        <a class="btn btn-danger" href="{% url 'Home' %}">Back</a>
-                    </div>
-                </div>
-            </td>
-        </tr>
-    </tbody>
-    </form>
-</table>
-<script src="{%static 'js/validate.js' %}"></script>
+  {% elif uploaded_image_url %}
+    <div class="mt-4">
+      <h4>Uploaded Image Preview:</h4>
+      <img src="{{ uploaded_image_url.url }}" alt="Uploaded File" class="img-fluid" style="max-width: 100%; height: auto;">
+    </div>
+  {% endif %}
+</div>
 {% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+

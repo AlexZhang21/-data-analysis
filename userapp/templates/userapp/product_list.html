@@ -1,0 +1,40 @@
+{% extends "userapp/base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Product Entries</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Product</th>
+                <th>Group</th>
+                <th>Year</th>
+                <th>Origin</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Tags</th>
+                <th>Uploaded By</th>
+                <th>Uploaded At</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in entries %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ entry.product }}</td>
+                <td>{{ entry.product_group }}</td>
+                <td>{{ entry.year }}</td>
+                <td>{{ entry.origin }}</td>
+                <td>{{ entry.quantity }}</td>
+                <td>{{ entry.price }}</td>
+                <td>{{ entry.tag1 }}, {{ entry.tag2 }}, {{ entry.tag3 }}</td>
+                <td>{{ entry.upload_user_id.username }}</td>
+                <td>{{ entry.upload_time }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
